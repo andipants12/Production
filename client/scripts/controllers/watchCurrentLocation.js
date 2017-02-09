@@ -14,6 +14,7 @@ angular.module('myApp').controller('watchCurrentUserLocation', function($rootSco
       latitude: response.coords.latitude,
       longitude: response.coords.longitude
     });
+    $rootScope.currentUserLoc = response.coords;
   };
   /**
     * @function error

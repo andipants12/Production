@@ -24,6 +24,10 @@
 
 <div class="icon-message" ng-controller="registerLogInLogOut">
     <img ng-show="loggedIn" src="../images/icon-message.png" ng-click="showPartial()">
+    <div>
+      <audio id="audioPlayer" loop="true" width="0" height="0" ></audio>
+      <button ng-click="getSong()">Join the Party</button>
+    </div>
 </div> 
 
 <div class="panel" ng-controller="chatterboxCtrl" ng-show="showMessages" ng-init="fetchMessage()">
@@ -54,6 +58,7 @@
 <div ng-controller="watchCurrentUserLocation"></div>
 
 <div ng-controller="chatterboxCtrl" ng-init="fetchMessage()"></div>
+
 
 
 

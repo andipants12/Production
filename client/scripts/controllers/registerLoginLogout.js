@@ -62,6 +62,8 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
   $scope.logIn = function() {
     var login = databaseAndAuth.auth.signInWithEmailAndPassword($scope.email, $scope.password);
     login.then(function(user) {
+      $rootScope.email = $scope.email;
+      $rootScope.password = $scope.password;
       $rootScope.userCredentials = {
         email: user.email
       }
@@ -89,6 +91,24 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
     * @memberOf registerLogInLogOut
     * @description Handles user logout. Logs out an existing user (using Firebase native methods 'remove()' and 'signOut()'). Uses promises. When user clicks the logout button, removes their coordinates from the database. After that it broadcasts (on $rootScope) that the user has logged out, and then it signs them out to remove any session data. Note: Database stores their chat messages and location, while authentication holds their session. That's why both need to be removed using .remove() and .signOut()
   */
+  $scope.userPreviousLocation = null;
+  $scope.checkUserLocation = function() {
+    if ( $scope.userPreviousLocation === null || $rootScope.loggedIn === false ) {
+      $scope.userPreviousLocation = $rootScope.currentUserLoc;
+      console.log('First time check user location');
+    } else {
+      console.log('Compare previousLocation and currentLocation');
+      console.log('previousLocation', $scope.userPreviousLocation);
+      console.log('currentLocation', $rootScope.currentUserLoc);
+      if ( JSON.stringify($scope.userPreviousLocation) === JSON.stringify($rootScope.currentUserLoc) ) {
+        console.log('Kick out inactive user');
+        $scope.logOut();
+      }
+    }
+  };
+
+  setInterval($scope.checkUserLocation, 180000);
+
   $scope.logOut = function() {
     //on logout remove the user's coordinates from database
     var logout = databaseAndAuth.database.ref('users/' + $scope.userId + '/coordinates').remove();
