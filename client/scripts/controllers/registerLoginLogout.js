@@ -41,6 +41,7 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
       databaseAndAuth.database.ref('users/' + user.uid).update({
           team: assignedTeam
       });
+      alert('Congragulations! You are on team ' + assignedTeam);
       databaseAndAuth.database.ref('team/').update({
         bool: !databaseAndAuth.team.bool
       })

@@ -40,30 +40,7 @@ angular.module('myApp').controller('initializeMap', function($scope, databaseAnd
 
 
   NgMap.getMap().then(function(map) {
-    // console.log('allUsers', allUsers);
-    // for (var key in allUsers) {
-    //   console.log('cycling in for in')
-    //   if (allUsers[key].team === 'blue') {
-    //     console.log('teamblue');
 
-    //     // set the pin color to blue
-    //     var pinColor = "1A1AFF";
-    //     // constructor for the pin image
-    //     var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
-    //        new google.maps.Size(21, 34),
-    //        new google.maps.Point(0,0),
-    //        new google.maps.Point(10, 34));
-
-    //       map.customMarkers.blue.setVisible(true);
-
-    //       // constructor for new marker, sets new marker
-    //       // var marker = new google.maps.Marker({
-    //       // map: map,
-    //       // icon: pinImage
-    //       // });
-
-    //   }
-    // };
   });
 
 });
