@@ -12,6 +12,7 @@
 <!--map init-->
 <div ng-controller="initializeMap" class="map-wrapper">
   <ng-map class="myMap" center="current-location" zoom="14" default-style="false">
+    <uib-alert class="team-alert" close='{{closeAlert()}}'>{{alert}}</uib-alert>
     <directions suppress-markers="true"></directions>
     <div ng-repeat="(key, value) in userLocations" >
       <marker id="{{value.team}}" position="{{value.coordinates.latitude}}, {{value.coordinates.longitude}}" icon="{{setPinIcon(value)}}"></marker>
@@ -22,10 +23,6 @@
   </ng-map>
 </div>
 
-<div ng-controller="initializeMap" class='team-alert-popup'>
-  <uib-alert ng-class="alert-team" type="success" close="closeAlert()">{{alert}}
-  </uib-alert>
-</div>
 
 <div class="icon-message" ng-controller="registerLogInLogOut">
     <img ng-show="loggedIn" src="../images/icon-message.png" ng-click="showPartial()">
@@ -34,6 +31,7 @@
       <button ng-click="getSong()">Join the Party</button>
     </div>
 </div> 
+
 
 <div class="panel" ng-controller="chatterboxCtrl" ng-show="showMessages" ng-init="fetchMessage()">
 

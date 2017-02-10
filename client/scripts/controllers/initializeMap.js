@@ -41,6 +41,11 @@ angular.module('myApp').controller('initializeMap', function($scope, databaseAnd
     }
   };
 
+  $scope.show = true;
+
+  $scope.closeAlert = function() {
+    $scope.show = false;
+  }
 
   NgMap.getMap().then(function(map) {
 
