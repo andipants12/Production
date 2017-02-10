@@ -22,11 +22,7 @@ angular.module('myApp').controller('initializeMap', function($scope, databaseAnd
     // console.log('databaseanauth.users', databaseAndAuth.users);
     $scope.$apply();
   });
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> 274f109b0f0289c55ae33e5279da140bf3b14e60
   $scope.setPinIcon = function (user) {
     var icons = {
       blue: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
@@ -41,10 +37,7 @@ angular.module('myApp').controller('initializeMap', function($scope, databaseAnd
   };
 
   NgMap.getMap().then(function(map) {
-<<<<<<< HEAD
 
-=======
->>>>>>> 274f109b0f0289c55ae33e5279da140bf3b14e60
   });
 
   $scope.socket = io();
@@ -74,10 +67,7 @@ angular.module('myApp').controller('initializeMap', function($scope, databaseAnd
     });
   }); 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 274f109b0f0289c55ae33e5279da140bf3b14e60
   $scope.client.on('open', function() {
     $scope.socket.emit('getId');
     console.log('open connection with binaryJS Server');
