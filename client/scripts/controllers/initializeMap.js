@@ -19,7 +19,12 @@ angular.module('myApp').controller('initializeMap', function($scope, databaseAnd
 
   $scope.$on('user:logIn', function(event, data) {
     $scope.userLocations = databaseAndAuth.users;
-    // console.log('databaseanauth.users', databaseAndAuth.users);
+    console.log('data logIn', databaseAndAuth.users[data])
+
+    $scope.currentUser = databaseAndAuth.users[data];
+
+    $scope.alert = 'You are on team ' + $scope.currentUser.team + '!';
+
     $scope.$apply();
   });
 
@@ -35,6 +40,7 @@ angular.module('myApp').controller('initializeMap', function($scope, databaseAnd
       return icons.red;
     }
   };
+
 
   NgMap.getMap().then(function(map) {
 

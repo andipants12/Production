@@ -22,6 +22,11 @@
   </ng-map>
 </div>
 
+<div ng-controller="initializeMap" class='team-alert-popup'>
+  <uib-alert ng-class="alert-team" type="success" close="closeAlert()">{{alert}}
+  </uib-alert>
+</div>
+
 <div class="icon-message" ng-controller="registerLogInLogOut">
     <img ng-show="loggedIn" src="../images/icon-message.png" ng-click="showPartial()">
     <div>
