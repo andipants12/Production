@@ -20,11 +20,17 @@ var init = firebase.initializeApp({
   messagingSenderId: "791147440152"
 });
 /*team count init*/
-
+var fbDB = firebase.database();
 // var teamInit = {red: 1, bool: true, blue: 0};
-firebase.database().ref('team').set({red: 1, bool: true, blue: 0});
+fbDB.ref('team').set({red: 0, bool: true, blue: 0});
 
+//listener for team db path;
 
+var localTeam = {};
+fbDB.ref('team').on('value', function (snapshot) {
+  localTeam = snapshot.val();
+  console.log(localTeam, "localTeam has changed")
+})
 
 var options = {
   cert: fs.readFileSync('client-cert.pem'),
@@ -78,6 +84,7 @@ io.on('connection', function(socket) {
   //number of users that have entered
   //use % to check if even or odd, assign team based on evenness
   numberOfUsers++;
+  teamCounter(numberOfUsers);
   var count = 0;
   currentSocketId = socket.id;
   console.log('a user connected', numberOfUsers);
@@ -148,6 +155,24 @@ io.on('connection', function(socket) {
   });
 
 });
+
+var teamCounter = function (currentCount) { 
+  if (currentCount % 2 === 0) {
+    localTeam.blue = localTeam.blue ++;
+    fbDB.ref('team/').update({
+      blue: localTeam.blue
+    });
+  } else {
+    localTeam.red = localTeam.red ++;
+    fbDB.ref('team/').update({
+      red: localTeam.red
+    });
+  }
+  localTeam.bool = !localTeam.bool;
+  fbDB.ref('team/').update({
+    bool: localTeam.bool
+  });
+}
 
 /**************************************************************
 Server

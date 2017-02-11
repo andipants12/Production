@@ -27,16 +27,16 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
       var assignedTeam;
       //will remove these boolean checks?
       if(databaseAndAuth.team.bool) {
-        var count = databaseAndAuth.team.blue;
-        databaseAndAuth.database.ref('team/').update({
-          blue: count + 1
-        });
+        // var count = databaseAndAuth.team.blue;
+        // databaseAndAuth.database.ref('team/').update({
+        //   blue: count + 1
+        // });
         assignedTeam = 'blue';
       } else {
-        var count = databaseAndAuth.team.red;
-        databaseAndAuth.database.ref('team/').update({
-          red: count + 1
-        });
+        // var count = databaseAndAuth.team.red;
+        // databaseAndAuth.database.ref('team/').update({
+        //   red: count + 1
+        // });
         assignedTeam = 'red';
       }
       databaseAndAuth.database.ref('users/' + user.uid).update({
