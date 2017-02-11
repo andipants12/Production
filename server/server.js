@@ -32,6 +32,13 @@ fbDB.ref('team').on('value', function (snapshot) {
   console.log(localTeam, "localTeam has changed")
 })
 
+// listener for user db path
+var userRemove = {};
+fbDB.ref('user').on('child_removed', function (snapshot) {
+  userRemove = snapshot.val();
+  console.log('userRemove updated with snapshot', userRemove)
+});
+
 var options = {
   cert: fs.readFileSync('client-cert.pem'),
   key: fs.readFileSync('client-key.pem')
@@ -91,6 +98,7 @@ io.on('connection', function(socket) {
   console.log('clients array', clients);
   socket.on('disconnect', function() {
     numberOfUsers--;
+    decrementTeam(userRemove);
     // clients = clients.filter( function(clientObj) {
     //   return clientObj.socketId !== socket.id;
     // });
@@ -157,13 +165,16 @@ io.on('connection', function(socket) {
 });
 
 var teamCounter = function (currentCount) { 
+  console.log('inside teamCounter', currentCount)
   if (currentCount % 2 === 0) {
-    localTeam.blue = localTeam.blue ++;
+    localTeam.blue += 1;
+    console.log('inside teamCounte conditional blue', localTeam.blue);
     fbDB.ref('team/').update({
       blue: localTeam.blue
     });
   } else {
-    localTeam.red = localTeam.red ++;
+    localTeam.red += 1;
+    console.log('inside teamCounte conditional red', localTeam.red);
     fbDB.ref('team/').update({
       red: localTeam.red
     });
@@ -172,6 +183,18 @@ var teamCounter = function (currentCount) {
   fbDB.ref('team/').update({
     bool: localTeam.bool
   });
+}
+
+// helper function to decrement team 
+var decrementTeam = function (user) {
+  var userTeam = user.team;
+  if (userTeam === 'red') {
+    localTeam.red = localTeam.red--;
+    fbDB.ref('team').update({red: localTeam.red})
+  } else {
+    localTeam.blue = localTeam.blue--;
+    fbDB.ref('team').update({blue: localTeam.blue});
+  };
 }
 
 /**************************************************************
