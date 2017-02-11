@@ -12,7 +12,7 @@
 <!--map init-->
 <div ng-controller="initializeMap" class="map-wrapper">
   <ng-map class="myMap" center="current-location" zoom="14" default-style="false">
-    <uib-alert class="team-alert" type="success" close='{{closeAlert()}}' dismiss-on-timeout="5000">{{alert}}</uib-alert>
+    <div class="team-alert">{{alert}}</div>
     <directions suppress-markers="true"></directions>
     <div ng-repeat="(key, value) in userLocations" >
       <marker id="{{value.team}}" position="{{value.coordinates.latitude}}, {{value.coordinates.longitude}}" icon="{{setPinIcon(value)}}" radius="0.01"></marker>
