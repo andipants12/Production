@@ -3,11 +3,28 @@ var path = require('path');
 var https = require('https');
 var app = express();
 var fs = require('fs');
+var firebase = require('firebase');
+require('firebase/auth');
+require('firebase/database');
 // var http = require('http').Server(app);
 var socketIo = require('socket.io');
 
 var BinaryServer = require('binaryjs').BinaryServer;
 var request = require('request');
+
+var init = firebase.initializeApp({
+  apiKey: "AIzaSyDwImvGhB-lbBSlMwHaoH_wMhuRen4c5CI",
+  authDomain: "perched-dd384.firebaseapp.com",
+  databaseURL: "https://perched-dd384.firebaseio.com",
+  storageBucket: "perched-dd384.appspot.com",
+  messagingSenderId: "791147440152"
+});
+/*team count init*/
+
+// var teamInit = {red: 1, bool: true, blue: 0};
+firebase.database().ref('team').set({red: 1, bool: true, blue: 0});
+
+
 
 var options = {
   cert: fs.readFileSync('client-cert.pem'),
@@ -58,6 +75,8 @@ binaryServer.on('connection', function(client) {
 
 var io = socketIo.listen(server);
 io.on('connection', function(socket) {
+  //number of users that have entered
+  //use % to check if even or odd, assign team based on evenness
   numberOfUsers++;
   var count = 0;
   currentSocketId = socket.id;

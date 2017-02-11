@@ -25,22 +25,24 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
       
       //team assignment
       var assignedTeam;
+      //will remove these boolean checks?
       if(databaseAndAuth.team.bool) {
-        // var count = databaseAndAuth.team.blue;
-        // databaseAndAuth.database.ref('team/').update({
-        //   blue: count + 1
-        // });
+        var count = databaseAndAuth.team.blue;
+        databaseAndAuth.database.ref('team/').update({
+          blue: count + 1
+        });
         assignedTeam = 'blue';
       } else {
-        // var count = databaseAndAuth.team.red;
-        // databaseAndAuth.database.ref('team/').update({
-        //   red: count + 1
-        // });
+        var count = databaseAndAuth.team.red;
+        databaseAndAuth.database.ref('team/').update({
+          red: count + 1
+        });
         assignedTeam = 'red';
       }
       databaseAndAuth.database.ref('users/' + user.uid).update({
           team: assignedTeam
       });
+      // alert('Congragulations! You are on team ' + assignedTeam);
       databaseAndAuth.database.ref('team/').update({
         bool: !databaseAndAuth.team.bool
       })
@@ -181,6 +183,7 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
       console.log('calling this function');
       localStorage.setItem('user', databaseUser);
       runListeners.initUsers();
+      runListeners.initTeam();
       runListeners.childChanged();
       runListeners.childAdded();
       runListeners.childRemoved();
@@ -194,11 +197,11 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
       $rootScope.$broadcast('user:logIn', databaseUser.uid);
       $scope.userId = databaseUser.uid;
       //set the team if it doesn't already exist
-      if (Object.keys(databaseAndAuth.users).length === 1) {
-        console.log('should not run')
-        var teamInit = {bool: true, red: 1, blue: 0};
-        databaseAndAuth.database.ref('team').set(teamInit);
-      }
+      // if (Object.keys(databaseAndAuth.users).length === 1) {
+      //   console.log('should not run')
+      //   var teamInit = {bool: true, red: 1, blue: 0};
+      //   databaseAndAuth.database.ref('team').set(teamInit);
+      // }
       $scope.$apply();
 
 

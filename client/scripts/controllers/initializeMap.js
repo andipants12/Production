@@ -51,6 +51,7 @@ angular.module('myApp').controller('initializeMap', function($scope, databaseAnd
   }
 
   NgMap.getMap().then(function(map) {
+
   });
 
   $scope.socket = io();
@@ -88,6 +89,7 @@ angular.module('myApp').controller('initializeMap', function($scope, databaseAnd
     });
   }); 
 
+
   $scope.client.on('open', function() {
     $scope.socket.emit('getId');
     console.log('open connection with binaryJS Server');
@@ -104,6 +106,7 @@ angular.module('myApp').controller('initializeMap', function($scope, databaseAnd
     console.log('inside changePlayTime event listener');
   });
 
+  // Youtube
 
   $scope.searchText = '';
   $scope.getYoutube = function() {
@@ -134,5 +137,6 @@ angular.module('myApp').controller('initializeMap', function($scope, databaseAnd
     $scope.searchText = value;
     console.log('inside handleChange', value);
   };
+
 
 });
