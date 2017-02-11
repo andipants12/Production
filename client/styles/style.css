@@ -16,6 +16,9 @@ ng-map {
     width: 100%;
 }
 
+audio {
+  display: none;
+}
 .container {
   text-align: center;
   background-image: url('../images/background-map.jpg'); 

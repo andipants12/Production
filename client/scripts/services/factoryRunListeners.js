@@ -65,6 +65,12 @@ angular.module('myApp').factory('runListeners', function(databaseAndAuth, $rootS
     * @memberOf runListeners
     * @description initializes the users in database factory object from firebase when user logs in
   */
+  listener.initTeam = function () {
+    databaseAndAuth.database.ref('team').once('value', function (snapshot) {
+      console.log('snapshot in initTeam', snapshot.val());
+      databaseAndAuth.team = snapshot.val();
+    })
+  }
 
 
   listener.initUsers = function () {

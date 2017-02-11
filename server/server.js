@@ -3,11 +3,28 @@ var path = require('path');
 var https = require('https');
 var app = express();
 var fs = require('fs');
+var firebase = require('firebase');
+require('firebase/auth');
+require('firebase/database');
 // var http = require('http').Server(app);
 var socketIo = require('socket.io');
 
 var BinaryServer = require('binaryjs').BinaryServer;
 var request = require('request');
+
+var init = firebase.initializeApp({
+  apiKey: "AIzaSyDwImvGhB-lbBSlMwHaoH_wMhuRen4c5CI",
+  authDomain: "perched-dd384.firebaseapp.com",
+  databaseURL: "https://perched-dd384.firebaseio.com",
+  storageBucket: "perched-dd384.appspot.com",
+  messagingSenderId: "791147440152"
+});
+/*team count init*/
+
+// var teamInit = {red: 1, bool: true, blue: 0};
+firebase.database().ref('team').set({red: 1, bool: true, blue: 0});
+
+
 
 var options = {
   cert: fs.readFileSync('client-cert.pem'),
@@ -23,57 +40,67 @@ server.listen(3000, function () {
  /**************************************************************
  Socket.Io and BinaryJS
  *************************************************************/
+var getTime = function() {
+  return (new Date).getTime().toString().slice(6) / 1000;
+};
 
 var binaryServer = BinaryServer({ port: 9000 });
-var time = 0;
-setInterval( function() {
-  time++;
-  // console.log(time, 'seconds passed since server started');
-}, 1000);
+// var time = 0;
+// setInterval( function() {
+//   time += .5;
+//   // console.log(time, 'seconds passed since server started');
+// }, 500);
 
+var exampleClient = {
+  socketId: '123123',
+  client: {}
+};
 
 var clients = [];
 var numberOfUsers = 0;
 var currentClientId = null;
+var currentSocketId = null;
 var firstPersonStartTime = null;
+var currentClients = {};
 
 binaryServer.on('connection', function(client) {
-  clients[client.id] = client;
+  clients[client.id] = {
+    client: client,
+    socketId: null
+  };
   currentClientId = client.id;
-  console.log('in binary server, clientId : ', client.id, 'clients array : ', clients);
-
-  // console.log(client.id);
-  // client.send(client.id);
-  // var mp3File = path.join(__dirname, '/hehey.mp3');
-  // var lucky = 'https://www.youtubeinmp3.com/fetch/?video=https://www.youtube.com/watch?v=acvIVA9-FMQ';
-  // var source = fs.createWriteStream(path.join(__dirname, './song.mp3'));
-  // request
-  // .get(lucky)
-  // .pipe(source)
-  // .on('finish', function() {
-  //   console.log('mp3 download finished');
-  //   var file = fs.createReadStream(path.join(__dirname, '/song.mp3'));
-  //   client.send(file);
-  // });
+  console.log('new client!', clients);
+  // console.log('in binary server, clientId : ', client.id, 'clients array : ', clients);
 });
 
 var io = socketIo.listen(server);
 io.on('connection', function(socket) {
+  //number of users that have entered
+  //use % to check if even or odd, assign team based on evenness
   numberOfUsers++;
+  var count = 0;
+  currentSocketId = socket.id;
   console.log('a user connected', numberOfUsers);
-
+  console.log('clients array', clients);
   socket.on('disconnect', function() {
     numberOfUsers--;
+    // clients = clients.filter( function(clientObj) {
+    //   return clientObj.socketId !== socket.id;
+    // });
+    currentClients[socket.id] = undefined;
+    delete currentClients[socket.id];
     console.log('user disconnected', numberOfUsers);
+    console.log('disconnected user id : ', socket.id);
+    console.log('current clients array', clients);
   });
 
   socket.on('songStarted', function(clientId) {
     if ( clientId === 0 ) {
-      firstPersonStartTime = time;
-      console.log('The first person started listening @ ', time);
+      firstPersonStartTime = getTime();
+      console.log('The first person started listening @ ', getTime());
     } else {
-      socket.emit('changePlayTime', time - firstPersonStartTime);
-      console.log('The song started in the client side : ', time);
+      socket.emit('changePlayTime', getTime() - firstPersonStartTime);
+      console.log('The song started in the client side : ', getTime());
     }
   });
 
@@ -81,13 +108,45 @@ io.on('connection', function(socket) {
     console.log('clientId in getSong event', clientId);
     var songFilePath = path.join(__dirname, '/song.mp3');
     var file = fs.createReadStream(songFilePath);
-    clients[clientId].send(file);
+    if ( clients[clientId] ) {
+      clients[clientId].client.send(file);    
+    }
+    // if ( clientId !== null ) {
+    // } else {
+    //   console.log('song could not be sent');
+    // }
   });
 
   socket.on('getId', function() {
-    socket.emit('getId', currentClientId);
+    console.log('current client id before error', currentClientId);
+    clients[currentClientId].socketId = currentSocketId;
+    currentClients[currentSocketId] = clients[currentClientId].client;
     console.log('send clientId back to user', currentClientId);
+    console.log('current clients array', clients);
+    socket.emit('getId', currentClientId);
   });
+
+  socket.on('searchYoutube', function(videoId) {
+    var songDownloadUrl = 'https://www.youtubeinmp3.com/fetch/?video=https://www.youtube.com/watch?v=' + videoId;
+    var savePath = fs.createWriteStream(path.join(__dirname, './song.mp3'));
+
+    request
+    .get(songDownloadUrl)
+    .pipe(savePath)
+    .on('finish', function() {
+      console.log('mp3 download finished');
+      var mp3File = fs.createReadStream(path.join(__dirname, '/song.mp3'));
+      firstPersonStartTime = getTime();
+      console.log('current cleints : ', currentClients);
+      for ( var client in currentClients ) {
+        currentClients[client].send(mp3File);
+      }
+    })
+    .on('error', function(err) {
+      console.log('Error in downloading the song : ', err);
+    });
+  });
+
 });
 
 /**************************************************************

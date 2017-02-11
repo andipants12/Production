@@ -25,6 +25,7 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
       
       //team assignment
       var assignedTeam;
+      //will remove these boolean checks?
       if(databaseAndAuth.team.bool) {
         var count = databaseAndAuth.team.blue;
         databaseAndAuth.database.ref('team/').update({
@@ -41,7 +42,7 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
       databaseAndAuth.database.ref('users/' + user.uid).update({
           team: assignedTeam
       });
-      alert('Congragulations! You are on team ' + assignedTeam);
+      // alert('Congragulations! You are on team ' + assignedTeam);
       databaseAndAuth.database.ref('team/').update({
         bool: !databaseAndAuth.team.bool
       })
@@ -51,7 +52,7 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
     })
 
     register.catch(function(error) {
-      console.log(error.message);
+      console.log('error at register', error.message);
     });
   };
   /**
@@ -97,9 +98,9 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
       $scope.userPreviousLocation = $rootScope.currentUserLoc;
       console.log('First time check user location');
     } else {
-      console.log('Compare previousLocation and currentLocation');
-      console.log('previousLocation', $scope.userPreviousLocation);
-      console.log('currentLocation', $rootScope.currentUserLoc);
+      // console.log('Compare previousLocation and currentLocation');
+      // console.log('previousLocation', $scope.userPreviousLocation);
+      // console.log('currentLocation', $rootScope.currentUserLoc);
       if ( JSON.stringify($scope.userPreviousLocation) === JSON.stringify($rootScope.currentUserLoc) ) {
         console.log('Kick out inactive user');
         $scope.logOut();
@@ -118,7 +119,7 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
       localStorage.removeItem('user');
       $rootScope.$broadcast('user:loggedOut', '');
       databaseAndAuth.auth.signOut();
-      console.log('user logged out: ', $scope.userId);
+      // console.log('user logged out: ', $scope.userId);
       $rootScope.loggedIn = false;
       $location.path('/');
       $scope.$apply();
@@ -139,8 +140,8 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
      console.log('First time check user location');
    } else {
      console.log('Compare previousLocation and currentLocation');
-     console.log('previousLocation', $scope.userPreviousLocation);
-     console.log('currentLocation', $rootScope.currentUserLoc);
+     // console.log('previousLocation', $scope.userPreviousLocation);
+     // console.log('currentLocation', $rootScope.currentUserLoc);
      if ( JSON.stringify($scope.userPreviousLocation) === JSON.stringify($rootScope.currentUserLoc) ) {
        console.log('Kick out inactive user');
        $scope.logOut();
@@ -148,7 +149,7 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
    }
  };
 
- setInterval($scope.checkUserLocation, 90000);
+ setInterval($scope.checkUserLocation, 300000);
   /**
     * @function $scope.showPartial
     * @memberOf registerLogInLogOut
@@ -181,6 +182,7 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
       console.log('calling this function');
       localStorage.setItem('user', databaseUser);
       runListeners.initUsers();
+      runListeners.initTeam();
       runListeners.childChanged();
       runListeners.childAdded();
       runListeners.childRemoved();
@@ -194,11 +196,11 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
       $rootScope.$broadcast('user:logIn', databaseUser.uid);
       $scope.userId = databaseUser.uid;
       //set the team if it doesn't already exist
-      if (Object.keys(databaseAndAuth.users).length === 1) {
-        console.log('should not run')
-        var teamInit = {bool: true, red: 1, blue: 0};
-        databaseAndAuth.database.ref('team').set(teamInit);
-      }
+      // if (Object.keys(databaseAndAuth.users).length === 1) {
+      //   console.log('should not run')
+      //   var teamInit = {bool: true, red: 1, blue: 0};
+      //   databaseAndAuth.database.ref('team').set(teamInit);
+      // }
       $scope.$apply();
 
 
