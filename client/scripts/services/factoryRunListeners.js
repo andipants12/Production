@@ -42,7 +42,7 @@ angular.module('myApp').factory('runListeners', function(databaseAndAuth, $rootS
       databaseAndAuth.users[snapshot.key] = snapshot.val();
       $rootScope.$broadcast('user:deleted', [snapshot.key, snapshot.val()]);
     });
-  };
+  };      
 
   /**
     * @function teamAssigned
