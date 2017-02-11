@@ -149,6 +149,7 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
    }
  };
 
+ // uncomment me out
  setInterval($scope.checkUserLocation, 300000);
   /**
     * @function $scope.showPartial
@@ -181,7 +182,7 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
 
       console.log('calling this function');
       localStorage.setItem('user', databaseUser);
-      runListeners.initUsers();
+      // runListeners.initUsers();
       runListeners.initTeam();
       runListeners.childChanged();
       runListeners.childAdded();
