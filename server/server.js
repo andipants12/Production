@@ -84,6 +84,7 @@ io.on('connection', function(socket) {
   //number of users that have entered
   //use % to check if even or odd, assign team based on evenness
   numberOfUsers++;
+  teamCounter(numberOfUsers);
   var count = 0;
   currentSocketId = socket.id;
   console.log('a user connected', numberOfUsers);
