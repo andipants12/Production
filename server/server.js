@@ -23,6 +23,7 @@ var init = firebase.initializeApp({
 var fbDB = firebase.database();
 // var teamInit = {red: 1, bool: true, blue: 0};
 fbDB.ref('team').set({red: 0, bool: true, blue: 0});
+///meow
 
 //listener for team db path;
 
