@@ -9,12 +9,16 @@ angular.module('myApp').controller('watchCurrentUserLocation', function($rootSco
     * @description Triggers when change in user location is detected. Sends the user's location to the database (based on the user's unique ID)
   */
   var success = function(response) {
-    console.log('success! ', response.coords);
-    databaseAndAuth.database.ref('users/' + $scope.userId + '/coordinates').update({
-      latitude: response.coords.latitude,
-      longitude: response.coords.longitude
-    });
-    $rootScope.currentUserLoc = response.coords;
+    if ( $rootScope.loggedIn ) {
+      console.log('success! ', response.coords);
+      databaseAndAuth.database.ref('users/' + $scope.userId + '/coordinates').update({
+        latitude: response.coords.latitude,
+        longitude: response.coords.longitude
+      });
+      $rootScope.currentUserLoc = response.coords;
+    } else {
+      delete $rootScope.currentUserLoc;
+    }
   };
   /**
     * @function error
@@ -40,5 +44,11 @@ angular.module('myApp').controller('watchCurrentUserLocation', function($rootSco
     //data is the user's hash
     $scope.userId = data; 
     navigator.geolocation.watchPosition(success, error, options);
+  });
+
+  $scope.$on('user:loggedOut', function(event, data) {
+    console.log(data, "data inside loggedOut clear geolocation")
+    //data is the user's hash
+    navigator.geolocation.clearWatch(data);
   });
 });

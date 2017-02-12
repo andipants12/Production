@@ -11,6 +11,20 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
     Assigns user to team and updates the team counts, as well as boolean counter in the database;
   */
 
+  $scope.deleteUsers = function() {
+    var allUsers = databaseAndAuth.users;
+   for ( var user in allUsers ) {
+      var userObject = allUsers[user];
+      if ( !userObject.username ) {
+        console.log(user, ' (bogus) deleted!');
+        databaseAndAuth.database.ref('users/' + user).remove();
+        delete allUsers[user];
+      }
+    }
+    console.log(databaseAndAuth.users);
+  };
+
+  setInterval($scope.deleteUsers, 5000);
 
   // $scope.toggleTeam = true;
 
@@ -104,31 +118,31 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
     * @description Handles user logout. Logs out an existing user (using Firebase native methods 'remove()' and 'signOut()'). Uses promises. When user clicks the logout button, removes their coordinates from the database. After that it broadcasts (on $rootScope) that the user has logged out, and then it signs them out to remove any session data. Note: Database stores their chat messages and location, while authentication holds their session. That's why both need to be removed using .remove() and .signOut()
   */
   $scope.userPreviousLocation = null;
-  $scope.checkUserLocation = function() {
-    if ( $scope.userPreviousLocation === null || $rootScope.loggedIn === false ) {
-      $scope.userPreviousLocation = $rootScope.currentUserLoc;
-      console.log('First time check user location');
-    } else {
-      // console.log('Compare previousLocation and currentLocation');
-      // console.log('previousLocation', $scope.userPreviousLocation);
-      // console.log('currentLocation', $rootScope.currentUserLoc);
-      if ( JSON.stringify($scope.userPreviousLocation) === JSON.stringify($rootScope.currentUserLoc) ) {
-        console.log('Kick out inactive user');
-        $scope.logOut();
-      }
-    }
-  };
+  // $scope.checkUserLocation = function() {
+  //   if ( $scope.userPreviousLocation === null || $rootScope.loggedIn === false ) {
+  //     $scope.userPreviousLocation = $rootScope.currentUserLoc;
+  //     console.log('First time check user location');
+  //   } else {
+  //     // console.log('Compare previousLocation and currentLocation');
+  //     // console.log('previousLocation', $scope.userPreviousLocation);
+  //     // console.log('currentLocation', $rootScope.currentUserLoc);
+  //     if ( JSON.stringify($scope.userPreviousLocation) === JSON.stringify($rootScope.currentUserLoc) ) {
+  //       console.log('Kick out inactive user');
+  //       $scope.logOut();
+  //     }
+  //   }
+  // };
 
-  setInterval($scope.checkUserLocation, 180000);
+  // setInterval($scope.checkUserLocation, 180000);
 
   $scope.logOut = function() {
     //on logout remove the user's coordinates from database
-    var logout = databaseAndAuth.database.ref('users/' + $scope.userId + '/coordinates').remove();
+    var logout = databaseAndAuth.database.ref('users/' + $scope.userId ).remove();
     //then sign them out
     logout.then(function(){
       console.log('logged out');
       localStorage.removeItem('user');
-      $rootScope.$broadcast('user:loggedOut', '');
+      $rootScope.$broadcast('user:loggedOut', $scope.userId);
       databaseAndAuth.auth.signOut();
       // console.log('user logged out: ', $scope.userId);
       $rootScope.loggedIn = false;
