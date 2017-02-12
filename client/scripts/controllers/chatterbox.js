@@ -5,6 +5,24 @@
 angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope, $location, databaseAndAuth) {
   console.log('inside chatterboxCtrl');
 
+  $scope.voiceRecognition = function() {
+    var recognition = new webkitSpeechRecognition();
+    recognition.onresult = function(event) {
+      var result = event.results[0][0].transcript;
+      console.log('This is result : ', result);
+      result = result.split(' ').filter( function(word) {
+        return word !== 'undefined';
+      }).join(' ');
+      $scope.text += ' ' + result;
+      $scope.$apply();
+    };
+    console.log('This is text before start :', $scope.text);
+    if ( !$scope.text ) {
+      $scope.text = '';    
+    }
+    recognition.start();
+  };
+
   var database = firebase.database();
 
   $scope.messageObj = {};

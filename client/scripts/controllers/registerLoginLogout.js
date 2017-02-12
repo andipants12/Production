@@ -12,41 +12,52 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
   */
 
 
+  // $scope.toggleTeam = true;
+
   $scope.register = function() {
+    var pickTeam = function() {
+      var random = Math.floor(2 * Math.random());
+      if(random === 0) {
+          return 'red';
+      } else {
+          return 'blue';
+      }
+      // $scope.toggleTeam = !$scope.toggleTeam;
+      // return $scope.toggleTeam ? 'red' : 'blue';
+    }
+
     var register = databaseAndAuth.auth.createUserWithEmailAndPassword($scope.email, $scope.password);
 
     register.then(function(user) {
+      var assignedTeam = pickTeam();
       databaseAndAuth.database.ref('users/' + user.uid).set({
         username: $scope.email.slice(0, $scope.email.indexOf('@')),
         email: $scope.email,
-        team: 'red'
+        team: assignedTeam
       });
       $rootScope.loggedIn = true;
       
-      //team assignment
-      var assignedTeam;
-      //will remove these boolean checks?
-      if(databaseAndAuth.team.bool) {
-        // var count = databaseAndAuth.team.blue;
-        // databaseAndAuth.database.ref('team/').update({
-        //   blue: count + 1
-        // });
-        assignedTeam = 'blue';
-      } else {
-        // var count = databaseAndAuth.team.red;
-        // databaseAndAuth.database.ref('team/').update({
-        //   red: count + 1
-        // });
-        assignedTeam = 'red';
-      }
-      databaseAndAuth.database.ref('users/' + user.uid).update({
-          team: assignedTeam
-      });
-      // alert('Congragulations! You are on team ' + assignedTeam);
-      databaseAndAuth.database.ref('team/').update({
-        bool: !databaseAndAuth.team.bool
-      })
-      runListeners.teamAssigned();
+      // var assignedTeam;
+      // if(databaseAndAuth.team.bool) {
+      //   // var count = databaseAndAuth.team.blue;
+      //   // databaseAndAuth.database.ref('team/').update({
+      //   //   blue: count + 1
+      //   // });
+      //   assignedTeam = 'blue';
+      // } else {
+      //   // var count = databaseAndAuth.team.red;
+      //   // databaseAndAuth.database.ref('team/').update({
+      //   //   red: count + 1
+      //   // });
+      //   assignedTeam = 'red';
+      // }
+      // databaseAndAuth.database.ref('users/' + user.uid).update({
+      //     team: assignedTeam
+      // });
+      // databaseAndAuth.database.ref('team/').update({
+      //   bool: !databaseAndAuth.team.bool
+      // })
+      // runListeners.teamAssigned();
 
       $location.path('/map');
     })
@@ -149,8 +160,8 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
    }
  };
 
- // uncomment me out
- setInterval($scope.checkUserLocation, 300000);
+ // setInterval($scope.checkUserLocation, 300000);
+
   /**
     * @function $scope.showPartial
     * @memberOf registerLogInLogOut
@@ -183,11 +194,10 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
       console.log('calling this function');
       localStorage.setItem('user', databaseUser);
       // runListeners.initUsers();
-      runListeners.initTeam();
       runListeners.childChanged();
       runListeners.childAdded();
       runListeners.childRemoved();
-      runListeners.teamAssigned();
+      // runListeners.teamAssigned();
       $rootScope.loggedIn = true;
       $rootScope.userCredentials = {
         email: databaseUser.email

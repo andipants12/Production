@@ -11,8 +11,8 @@
 
 <!--map init-->
 <div ng-controller="initializeMap" class="map-wrapper">
-  <ng-map class="myMap" center="current-location" zoom="14" default-style="false">
-    <div class="team-alert">{{alert}}</div>
+  <ng-map class="myMap" center="current-location" zoom="14" default-style="false" ng-click="captureEnemy()">
+    <uib-alert class="team-alert" type="success" close='{{closeAlert()}}' dismiss-on-timeout="5000">{{alert}}</uib-alert>
     <directions suppress-markers="true"></directions>
     <div ng-repeat="(key, value) in userLocations" >
       <marker id="{{value.team}}" position="{{value.coordinates.latitude}}, {{value.coordinates.longitude}}" icon="{{setPinIcon(value)}}" radius="0.01"></marker>
@@ -58,6 +58,7 @@
         <input type="text" size="500" ng-model="text" style="width: 95%" autofocus /><br/>
         <button type="submit" ng-click="sendMessage()" style="visibility: hidden">Send Message</button>
       </form>
+      <button ng-click="voiceRecognition()" >Voice to Speech</button>
     <div>
 
   </div>

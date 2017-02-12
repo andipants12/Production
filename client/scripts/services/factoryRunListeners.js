@@ -50,27 +50,29 @@ angular.module('myApp').factory('runListeners', function(databaseAndAuth, $rootS
     * @description Listens for team assignment to 'red' or 'blue'
   */
 
-  listener.teamAssigned = function () {
-    databaseAndAuth.database.ref('team').on('value', function (snapshot) {
-      console.log('snapshot', snapshot.val())
-      databaseAndAuth.team = snapshot.val();
+  // listener.teamAssigned = function () {
+  //   databaseAndAuth.database.ref('team').on('value', function (snapshot) {
+  //     console.log('snapshot', snapshot.val())
+  //     databaseAndAuth.team = snapshot.val();
 
-      // $rootScope.$broadcast('team:')
-      console.log("database inside factory", databaseAndAuth.team)
-    });
-  }
+  //     // $rootScope.$broadcast('team:')
+  //     console.log("database inside factory", databaseAndAuth.team)
+  //   });
+  // }
 
   /**
     * @function initUsers
     * @memberOf runListeners
     * @description initializes the users in database factory object from firebase when user logs in
   */
-  listener.initTeam = function () {
-    databaseAndAuth.database.ref('team').once('value', function (snapshot) {
-      console.log('snapshot in initTeam', snapshot.val());
-      databaseAndAuth.team = snapshot.val();
-    })
-  }
+  
+  // listener.initTeam = function () {
+  //   databaseAndAuth.database.ref('team').once('value', function (snapshot) {
+  //     console.log('snapshot in initTeam', snapshot.val());
+  //     databaseAndAuth.team = snapshot.val();
+  //   })
+  // }
+
 
 
   // listener.initUsers = function () {

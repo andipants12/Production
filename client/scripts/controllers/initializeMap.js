@@ -5,6 +5,36 @@
 
 angular.module('myApp').controller('initializeMap', function($scope, databaseAndAuth, NgMap, $rootScope) {
 
+  $scope.calculateDistance = function(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;    // Math.PI / 180
+    var c = Math.cos;
+    var a = 0.5 - c((lat2 - lat1) * p) / 2 +
+            c(lat1 * p) * c(lat2 * p) *
+            (1 - c((lon2 - lon1) * p)) / 2;
+
+   return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+  };
+
+ $scope.captureEnemy = function() {
+    var allUsers = $scope.userLocations;
+    var currentUserId = databaseAndAuth.auth.currentUser.uid;
+    var currentUserCoords = allUsers[currentUserId].coordinates;
+    var currentUserTeam = allUsers[currentUserId].team;
+    console.log('In captureEnemy function!');    
+    for ( var user in allUsers ) {
+      console.log(allUsers[user]);    
+      var userObject = allUsers[user];
+      if ( userObject.coordinates ) {
+        var distance = $scope.calculateDistance(currentUserCoords.latitude, currentUserCoords.longitude, userObject.coordinates.latitude, userObject.coordinates.longitude);
+        if ( distance < 10 && distance !== 0 ) {
+          console.log('currentUserTeam', currentUserTeam, currentUserCoords, distance)
+          databaseAndAuth.database.ref('users/' + user).update({
+            team: currentUserTeam
+          });
+        }
+      }
+    }
+  };
 
   $scope.$on('user:updatedOrAdded', function(event, data) {
     console.log('updated or added', data);
